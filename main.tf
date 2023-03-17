@@ -146,6 +146,8 @@ module "kubernetes_addons" {
     # helm pull prometheus-community/kube-prometheus-stack --version 43.3.1
     # tar -zxvf kube-prometheus-stack-43.3.1.tgz
     # ls -l kube-prometheus-stack/values.yaml
+    # 使用EBS卷需要提前安装EBS CSI Driver
+    # https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html
     
     #set = [
     #  {
