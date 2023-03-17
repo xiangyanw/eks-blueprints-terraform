@@ -20,25 +20,49 @@
     enabled: false
 
   prometheus:
+    enabled: true
+    ingress:
+      enabled: true
+      annotations:
+        alb.ingress.kubernetes.io/group.name: "monitoring"
+        alb.ingress.kubernetes.io/scheme: "internet-facing"
+        alb.ingress.kubernetes.io/target-type: "ip"
+      paths:
+      - /
     prometheusSpec:
+      nodeSelector:
+        app: monitoring
+      tolerations:
+      - key: "app"
+        operator: "Equal"
+        value: "monitoring"
+        effect: "NoSchedule"
+      retention: 10d
+      replicas: 2
+      resources: {}
       ## Prometheus StorageSpec for persistent data on AWS EBS
       ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
       ##
       storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: gp3
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 50Gi
+        volumeClaimTemplate:
+          spec:
+            storageClassName: gp3
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 20Gi
 
   prometheusOperator:
-    admissionWebhooks:
-      failurePolicy: Ignore
+    enabled: true
+    nodeSelector:
+      app: monitoring
+    tolerations:
+    - key: "app"
+      operator: "Equal"
+      value: "monitoring"
+      effect: "NoSchedule"
 
   grafana:
-    namespaceOverride: "grafana"
     ingress:
       enabled: true
       ingressClassName: alb
@@ -46,7 +70,18 @@
         alb.ingress.kubernetes.io/group.name: "monitoring"
         alb.ingress.kubernetes.io/scheme: "internet-facing"
         alb.ingress.kubernetes.io/target-type: "ip"
+      path: /
+    nodeSelector:
+      app: monitoring
+    tolerations:
+    - key: "app"
+      operator: "Equal"
+      value: "monitoring"
+      effect: "NoSchedule"
     
   alertmanager:
     enabled: false
   ## additional configuration options available here: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+  
+
+      

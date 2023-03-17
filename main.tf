@@ -96,13 +96,13 @@ module "eks_blueprints" {
   }
   
   # This is the team that manages the EKS cluster provisioning.
-  #platform_teams = {
-  #  admin = {
-  #    users = [
-  #      data.aws_caller_identity.current.arn
-  #    ]
-  #  }
-  #}
+  platform_teams = {
+    admin = {
+      users = [
+        data.aws_caller_identity.current.arn
+      ]
+    }
+  }
 }
 
 module "kubernetes_addons" {
@@ -165,6 +165,14 @@ module "kubernetes_addons" {
     #]
   }
   
+  enable_thanos = true
+  thanos_helm_config = {
+    name       = "thanos"
+    chart      = "thanos"
+    repository = "https://charts.bitnami.com/bitnami"
+    version    = "11.6.4"
+  }
+
   #enable_velero           = true
   #velero_helm_config = {
   #  name        = "velero"
