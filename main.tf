@@ -67,22 +67,22 @@ module "eks_blueprints" {
       additional_tags = local.prom_additional_tags
       pre_userdata    = local.prom_pre_userdata
     }
-    mg_biz = {
-      enable_node_group_prefix = local.biz_node_group_prefix
-      node_group_name = local.biz_node_group_name
-      create_launch_template = local.biz_create_launch_template
-      instance_types  = local.biz_instance_types
-      desired_size    = local.biz_desired_size
-      max_size        = local.biz_max_size
-      disk_size       = local.biz_disk_size
-      subnet_ids      = local.biz_subnet_ids
-      create_iam_role = local.biz_create_iam_role
-      iam_role_arn    = local.biz_iam_role_arn
+    #mg_biz = {
+    #  enable_node_group_prefix = local.biz_node_group_prefix
+    #  node_group_name = local.biz_node_group_name
+    #  create_launch_template = local.biz_create_launch_template
+    #  instance_types  = local.biz_instance_types
+    #  desired_size    = local.biz_desired_size
+    #  max_size        = local.biz_max_size
+    #  disk_size       = local.biz_disk_size
+    #  subnet_ids      = local.biz_subnet_ids
+    #  create_iam_role = local.biz_create_iam_role
+    #  iam_role_arn    = local.biz_iam_role_arn
       #k8s_taints      = local.biz_k8s_taints
-      k8s_labels      = local.biz_k8s_labels
-      additional_tags = local.biz_additional_tags
-      pre_userdata    = local.biz_pre_userdata
-    }
+    #  k8s_labels      = local.biz_k8s_labels
+    #  additional_tags = local.biz_additional_tags
+    #  pre_userdata    = local.biz_pre_userdata
+    #}
   #  mg_2 = {
   #    node_group_name = "mng-2"
   #    instance_types  = local.instance_types
@@ -134,7 +134,9 @@ module "kubernetes_addons" {
   
   enable_metrics_server = true
   
-  enable_kube_prometheus_stack      = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  
+  enable_kube_prometheus_stack      = false
   kube_prometheus_stack_helm_config = {
     name                      = "kube-prometheus-stack"
     chart                     = "kube-prometheus-stack"
@@ -146,26 +148,13 @@ module "kubernetes_addons" {
     # helm pull prometheus-community/kube-prometheus-stack --version 43.3.1
     # tar -zxvf kube-prometheus-stack-43.3.1.tgz
     # ls -l kube-prometheus-stack/values.yaml
-    # 使用EBS卷需要提前安装EBS CSI Driver
+    # 使用EBS卷需要提前安装EBS CSI Driver，可使用本blueprint安装或参考以下官方文档
     # https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html
+    # 建议使用gp3作为默认storageclass
     
-    #set = [
-    #  {
-    #    name  = "fullnameOverride"
-    #    value = "kube-prometheus-stack"
-    #  },
-    #  {
-    #    name  = "prometheus.prometheusSpec"
-    #    value = {}
-    #  },
-    #  {
-    #    name  = "alertmanager.enabled"
-    #    value = false
-    #  }
-    #]
   }
   
-  enable_thanos = true
+  enable_thanos = false
   thanos_helm_config = {
     name       = "thanos"
     chart      = "thanos"

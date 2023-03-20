@@ -42,12 +42,13 @@ locals {
   prom_create_iam_role = false #指定节点组IAM role
   prom_iam_role_arn    = "arn:aws:iam::625011733915:role/37GameNodeRole"
   prom_create_launch_template = true # 创建自定义启动模版
-  prom_disk_size = 100
+  prom_disk_size = 200
   prom_subnet_ids = ["subnet-0076276ba39b907d2", "subnet-068c41b2b15cd3dd4", "subnet-0e3fbb88bc117ef90"]
   prom_k8s_taints = [{key= "app", value="monitoring", "effect"="NO_SCHEDULE"}]
   prom_k8s_labels = {
     environment = "sit"
     app  = "monitoring"
+    test = "test"
   }
   prom_additional_tags = {
     app         = "monitoring"
